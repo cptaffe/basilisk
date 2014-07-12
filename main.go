@@ -26,39 +26,43 @@ func Compute(s *Program) string {
 	if t == nil {
 		return "error..."
 	}
-	str := "result: {"
+	var str string
 	app := ", "
 	for i := 0; i < (len(t.Sub) - s.Len); i++ {
-		if i == (len(t.Sub)-s.Len)-1 {
-			str += fmt.Sprintf("%s", t.Sub[s.Len+i])
-		} else {
-			str += fmt.Sprintf("%s%s", t.Sub[s.Len+i], app)
+		str += t.Sub[s.Len+i].String()
+		if i != (len(t.Sub)-s.Len)-1 {
+			str += app
 		}
 	}
-	str += "}"
+	str = fmt.Sprintf("result: {%s}", str)
 	s.Len = len(t.Sub) // set new len
 	return str
 }
 
 // Read input from stdin & output result to stdout
-func main() {
+func readFile() string {
 	r := bufio.NewReader(os.Stdin)
-	p := new(Program)
+	var str string
 	for {
-		fmt.Print(": ")
 		b, _, err := r.ReadLine()
 		if err != nil {
 			if err == io.EOF {
-				fmt.Print("exit\n")
-				return
+			} else {
+				log.Print(err)
 			}
-			log.Print(err)
 		}
 		if string(b) == "exit" {
 			os.Exit(0)
+		} else if string(b) == "exec" {
+			return str
+		} else {
+			str += string(b)
 		}
-		p.Str += string(b)
-		ans := Compute(p)
-		fmt.Println(ans)
 	}
+}
+
+func main() {
+	p := new(Program)
+	p.Str = readFile()
+	Compute(p);
 }
