@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/cptaffe/lang/lexer"
 	"github.com/cptaffe/lang/optim"
 	"github.com/cptaffe/lang/parser"
 	"io"
@@ -17,12 +16,7 @@ type Program struct {
 }
 
 func Compute(s *Program) string {
-	ch := lexer.Lex(s.Str)
-	done := make(chan *parser.Tree)
-	parser.Parse(ch, done)
-	tree := <-done
-	//fmt.Printf("%s\n", tree)
-	t := optim.Eval(tree)
+	t := optim.Eval(parser.Parse(s.Str))
 	if t == nil {
 		return "error..."
 	}
