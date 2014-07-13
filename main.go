@@ -16,7 +16,7 @@ type Program struct {
 }
 
 func Compute(s *Program) string {
-	t := optim.Eval(parser.Parse(s.Str))
+	t := optim.Eval(parser.Parse(s.Str, "input"))
 	if t == nil {
 		return "error..."
 	}
@@ -34,13 +34,14 @@ func Compute(s *Program) string {
 }
 
 // Read input from stdin & output result to stdout
-func readFile() string {
-	r := bufio.NewReader(os.Stdin)
+func readFile(file io.Reader) string {
+	r := bufio.NewReader(file)
 	var str string
 	for {
 		b, _, err := r.ReadLine()
 		if err != nil {
 			if err == io.EOF {
+				return str
 			} else {
 				log.Print(err)
 			}
@@ -57,6 +58,14 @@ func readFile() string {
 
 func main() {
 	p := new(Program)
-	p.Str = readFile()
+	if len(os.Args) > 1 {
+		file, err := os.Open(os.Args[1])
+		if err != nil {
+			log.Fatal(err)
+		}
+		p.Str = readFile(file)
+	} else {
+		p.Str = readFile(os.Stdin)
+	}
 	Compute(p);
 }
