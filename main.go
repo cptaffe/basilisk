@@ -3,8 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/cptaffe/lang/optim"
 	"github.com/cptaffe/lang/parser"
+	"github.com/cptaffe/lang/optim"
 	"io"
 	"log"
 	"os"
@@ -21,14 +21,14 @@ func Compute(s *Program) string {
 		return "error..."
 	}
 	var str string
-	app := ", "
+	app := "\n"
 	for i := 0; i < (len(t.Sub) - s.Len); i++ {
 		str += t.Sub[s.Len+i].String()
 		if i != (len(t.Sub)-s.Len)-1 {
 			str += app
 		}
 	}
-	str = fmt.Sprintf("result: {%s}", str)
+	str = fmt.Sprintf("%s\n", str)
 	s.Len = len(t.Sub) // set new len
 	return str
 }
@@ -67,5 +67,6 @@ func main() {
 	} else {
 		p.Str = readFile(os.Stdin)
 	}
-	Compute(p);
+	str := Compute(p);
+	print(str)
 }
